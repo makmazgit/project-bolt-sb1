@@ -57,6 +57,23 @@ function App() {
   const [isViaSocialAuth, setIsViaSocialAuth] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
+  // Add ref for designer input container
+  const designerInputRef = useRef<HTMLDivElement>(null);
+
+  // Add click outside handler
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (designerInputRef.current && !designerInputRef.current.contains(event.target as Node)) {
+        setShowBrandSuggestions(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   // Add useRef for OTP inputs
   const otpInputs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -442,7 +459,7 @@ function App() {
                   />
                 </div>
 
-                <div className="relative space-y-2">
+                <div className="relative space-y-2" ref={designerInputRef}>
                   <label htmlFor="designers" className="block text-sm font-medium text-gray-700 mb-1">Favorite Luxury Brands (Optional)</label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {getSelectedBrands().map(brand => (
