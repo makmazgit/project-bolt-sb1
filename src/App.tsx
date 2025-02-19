@@ -337,18 +337,40 @@ function App() {
               <div className="space-y-4">
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-                  <input
-                    id="email"
-                    type="email"
-                    name="email"
-                    autoComplete="email"
-                    value={profile.email}
-                    onChange={(e) => handleProfileChange('email', e.target.value)}
-                    className="block w-full px-4 py-3 border rounded-lg bg-gray-100"
-                    placeholder="Email address"
-                    required
-                    disabled
-                  />
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block font-mono">Email:</label>
+                    {isEmailVerified && (
+                      <span className="text-sm flex items-center gap-1">
+                        Verified ✓
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      id="email"
+                      type="email"
+                      name="email"
+                      autoComplete="email"
+                      value={profile.email}
+                      onChange={(e) => handleProfileChange('email', e.target.value)}
+                      className="block w-full px-4 py-3 border rounded-lg bg-gray-100"
+                      placeholder="Email address"
+                      required
+                      disabled
+                    />
+                  </div>
+                  {!isEmailVerified && !isViaSocialAuth && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      We sent a verification link to your email. Click on it to verify your email, or{' '}
+                      <button 
+                        onClick={handleEmailVerification}
+                        className="text-black underline"
+                        type="button"
+                      >
+                        retry
+                      </button>
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -426,6 +448,12 @@ function App() {
 
                 <div className="space-y-2">
                   <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Mobile Number *</label>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block font-mono">Phone Number:</label>
+                    <span className="text-sm flex items-center gap-1">
+                      Verified ✓
+                    </span>
+                  </div>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                       <span className="text-gray-500 text-sm">🇦🇪 +971</span>
@@ -634,24 +662,24 @@ function App() {
           {/* Header */}
           <header className="border-b">
             <div className="max-w-7xl mx-auto px-4 py-6">
-              <h1 className="text-4xl text-center font-serif mb-8">LUXURY FASION</h1>
+              <h1 className="text-4xl text-center font-mono mb-8">Luxury Fashion</h1>
               <p className="text-xs text-center text-gray-500 mb-8">THE DEFINITIVE HOME OF LUXURY</p>
               
               {/* Main Navigation */}
               <nav className="flex justify-center space-x-8 text-sm mb-4">
-                <span className="hover:text-gray-600">NEW IN</span>
-                <span className="hover:text-gray-600">DESIGNERS</span>
-                <span className="hover:text-gray-600">CLOTHING</span>
-                <span className="hover:text-gray-600">SHOES</span>
-                <span className="hover:text-gray-600">SNEAKERS</span>
-                <span className="hover:text-gray-600">ACCESSORIES</span>
-                <span className="hover:text-gray-600">GROOMING</span>
-                <span className="hover:text-gray-600">GIFTS</span>
-                <span className="hover:text-gray-600">BAGS</span>
-                <span className="hover:text-gray-600">WATCHES</span>
-                <span className="hover:text-gray-600">HOME</span>
-                <span className="hover:text-gray-600">THE EDITS</span>
-                <span className="text-red-600">SALE</span>
+                <a href="#" className="hover:text-gray-600">NEW IN</a>
+                <a href="#" className="hover:text-gray-600">DESIGNERS</a>
+                <a href="#" className="hover:text-gray-600">CLOTHING</a>
+                <a href="#" className="hover:text-gray-600">SHOES</a>
+                <a href="#" className="hover:text-gray-600">SNEAKERS</a>
+                <a href="#" className="hover:text-gray-600">ACCESSORIES</a>
+                <a href="#" className="hover:text-gray-600">GROOMING</a>
+                <a href="#" className="hover:text-gray-600">GIFTS</a>
+                <a href="#" className="hover:text-gray-600">BAGS</a>
+                <a href="#" className="hover:text-gray-600">WATCHES</a>
+                <a href="#" className="hover:text-gray-600">HOME</a>
+                <a href="#" className="hover:text-gray-600">THE EDITS</a>
+                <a href="#" className="text-red-600">SALE</a>
               </nav>
             </div>
           </header>
@@ -659,8 +687,8 @@ function App() {
           {/* Breadcrumb */}
           <div className="bg-gray-100 py-2">
             <div className="max-w-7xl mx-auto px-4">
-              <div className="text-sm text-gray-600">
-                <span className="text-gray-400">Home</span> &gt; <span>My Account</span>
+              <div className="text-sm font-mono">
+                <a href="#" className="text-gray-400">Home</a> &gt; <a href="#" className="text-gray-400">My Account</a> &gt; <span>My Profile</span>
               </div>
             </div>
           </div>
@@ -670,41 +698,41 @@ function App() {
             <div className="flex gap-8">
               {/* Sidebar */}
               <div className="w-64 flex-shrink-0">
-                <nav className="space-y-1">
-                  <div className="bg-gray-900 text-white px-4 py-3 rounded">
+                <nav className="space-y-1 border rounded-lg overflow-hidden">
+                  <a href="#" className="flex items-center px-4 py-3 hover:bg-gray-50">
                     <span>My Account</span>
-                  </div>
-                  <div className="px-4 py-3 text-gray-600 hover:bg-gray-50">
+                  </a>
+                  <a href="#" className="flex items-center px-4 py-3 hover:bg-gray-50">
                     <span>My Orders</span>
-                  </div>
-                  <div className="px-4 py-3 text-gray-600 hover:bg-gray-50">
+                  </a>
+                  <a href="#" className="flex items-center px-4 py-3 hover:bg-gray-50">
                     <span>My Favourite Designers</span>
-                  </div>
-                  <div className="px-4 py-3 text-gray-600 hover:bg-gray-50">
-                    <span>Loyalty Rewards</span>
-                  </div>
-                  <div className="px-4 py-3 text-gray-600 hover:bg-gray-50">
+                  </a>
+                  <a href="#" className="flex items-center px-4 py-3 hover:bg-gray-50">
+                    <span>Amber Rewards</span>
+                  </a>
+                  <a href="#" className="flex items-center px-4 py-3 hover:bg-gray-50">
                     <span>Store Credit</span>
-                  </div>
-                  <div className="px-4 py-3 text-gray-600 hover:bg-gray-50">
+                  </a>
+                  <a href="#" className="flex items-center px-4 py-3 bg-gray-900 text-white">
                     <span>My Profile</span>
-                  </div>
-                  <div className="px-4 py-3 text-gray-600 hover:bg-gray-50">
+                  </a>
+                  <a href="#" className="flex items-center px-4 py-3 hover:bg-gray-50">
                     <span>My Address Book</span>
-                  </div>
-                  <div className="px-4 py-3 text-gray-600 hover:bg-gray-50">
+                  </a>
+                  <a href="#" className="flex items-center px-4 py-3 hover:bg-gray-50">
                     <span>Credit / Debit Cards</span>
-                  </div>
-                  <div className="px-4 py-3 text-gray-600 hover:bg-gray-50">
+                  </a>
+                  <a href="#" className="flex items-center px-4 py-3 hover:bg-gray-50">
                     <span>Communication Preferences</span>
-                  </div>
+                  </a>
                 </nav>
               </div>
 
-              {/* Main Content Area */}
+              {/* Profile Form */}
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-8">
-                  <h2 className="text-2xl font-medium">My Account</h2>
+                  <h2 className="text-2xl font-mono">My Profile</h2>
                   <div className="text-sm">
                     <span className="text-gray-500">Need help?</span>
                     <button className="ml-4 text-gray-900 font-medium">CALL US</button>
@@ -712,85 +740,156 @@ function App() {
                   </div>
                 </div>
 
-                {/* Recent Orders */}
-                <div className="mb-8">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-medium">YOUR RECENT ORDERS</h3>
-                    <span className="text-orange-600 text-sm font-medium">VIEW ALL ORDERS</span>
+                <form className="space-y-6 max-w-2xl">
+                  {/* Salutation */}
+                  <div>
+                    <label className="block font-mono mb-2">Salutation:</label>
+                    <div className="flex gap-6">
+                      {['Mr', 'Mrs', 'Miss'].map((option) => (
+                        <label key={option} className="flex items-center">
+                          <input
+                            type="radio"
+                            name="salutation"
+                            value={option}
+                            checked={profile.salutation === option}
+                            onChange={(e) => handleProfileChange('salutation', e.target.value)}
+                            className="w-4 h-4 border-2 border-gray-300"
+                          />
+                          <span className="ml-2 font-mono">{option}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                  <p className="text-gray-600">
-                    You don't have any recent orders. For your purchase history, please visit My Orders.
-                  </p>
-                </div>
 
-                {/* User Details */}
-                <div className="mb-8">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-medium">YOUR DETAILS</h3>
-                    <span className="text-orange-600 text-sm font-medium">EDIT</span>
+                  {/* Name Fields */}
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <label className="block font-mono mb-2">First Name:</label>
+                      <input
+                        type="text"
+                        value={profile.firstName}
+                        onChange={(e) => handleProfileChange('firstName', e.target.value)}
+                        className="w-full p-2 border-2 font-mono"
+                        disabled={isViaSocialAuth}
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-mono mb-2">Last Name:</label>
+                      <input
+                        type="text"
+                        value={profile.surname}
+                        onChange={(e) => handleProfileChange('surname', e.target.value)}
+                        className="w-full p-2 border-2 font-mono"
+                        disabled={isViaSocialAuth}
+                      />
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-8">
+
+                  {/* Email and Phone side by side */}
+                  <div className="grid grid-cols-2 gap-6">
+                    {/* Email */}
                     <div>
-                      <p className="text-gray-500 mb-1">First Name:</p>
-                      <p className="text-gray-900">{profile.firstName}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 mb-1">Last Name:</p>
-                      <p className="text-gray-900">{profile.surname}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-500 mb-1">Email Address:</p>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 group">
-                          <p className="text-gray-900">{profile.email}</p>
-                          {isEmailVerified && (
-                            <div className="relative">
-                              <CheckCircle2 className="w-4 h-4 text-green-500" />
-                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                                Verified
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        {!isEmailVerified && !isViaSocialAuth && (
-                          <p className="text-sm text-gray-600">
-                            We sent a verification link to your email. Click on it to verify your email, or{' '}
-                            <button 
-                              onClick={handleEmailVerification}
-                              className="text-gray-900 underline hover:text-gray-700"
-                            >
-                              retry
-                            </button>
-                          </p>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="block font-mono">Email:</label>
+                        {isEmailVerified && (
+                          <span className="text-sm flex items-center gap-1">
+                            Verified ✓
+                          </span>
                         )}
                       </div>
+                      <div className="relative">
+                        <input
+                          type="email"
+                          value={profile.email}
+                          className="w-full p-2 border-2 font-mono bg-gray-100"
+                          disabled
+                        />
+                      </div>
+                      <p className="text-sm text-gray-500 mt-1 font-mono">click to change</p>
+                      {!isEmailVerified && !isViaSocialAuth && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          We sent a verification link to your email. Click on it to verify your email, or{' '}
+                          <button 
+                            onClick={handleEmailVerification}
+                            className="text-black underline"
+                            type="button"
+                          >
+                            retry
+                          </button>
+                        </p>
+                      )}
                     </div>
+
+                    {/* Phone */}
                     <div>
-                      <p className="text-gray-500 mb-1">Phone Number:</p>
-                      <div className="flex items-center gap-2 group">
-                        <p className="text-gray-900">{formatPhoneForDisplay(profile.phone)}</p>
-                        <div className="relative">
-                          <CheckCircle2 className="w-4 h-4 text-green-500" />
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                            Verified
-                          </div>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="block font-mono">Phone Number:</label>
+                        <span className="text-sm flex items-center gap-1">
+                          Verified ✓
+                        </span>
+                      </div>
+                      <div className="flex gap-2">
+                        <div className="w-24">
+                          <input
+                            type="text"
+                            value="+971"
+                            className="w-full p-2 border-2 font-mono bg-gray-100"
+                            disabled
+                          />
+                        </div>
+                        <div className="relative flex-1">
+                          <input
+                            type="tel"
+                            value={profile.phone}
+                            onChange={handlePhoneChange}
+                            className="w-full p-2 border-2 font-mono"
+                            placeholder="5X XXX XXXX"
+                          />
                         </div>
                       </div>
+                      {phoneError ? (
+                        <p className="text-sm text-red-600 mt-1">{phoneError}</p>
+                      ) : (
+                        <p className="text-sm text-gray-500 mt-1 font-mono">click to change</p>
+                      )}
                     </div>
                   </div>
-                </div>
 
-                {/* Address */}
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-medium">YOUR ADDRESS(ES)</h3>
-                    <span className="text-orange-600 text-sm font-medium">EDIT ADDRESS</span>
-                  </div>
+                  {/* Birthday */}
                   <div>
-                    <h4 className="text-gray-900 font-medium mb-2">Delivery Address</h4>
-                    <p className="text-gray-500">No addresses saved yet.</p>
+                    <label className="block font-mono mb-2">Birthday:</label>
+                    <input
+                      type="date"
+                      value={profile.birthday}
+                      onChange={(e) => handleProfileChange('birthday', e.target.value)}
+                      className="w-full p-2 border-2 font-mono"
+                    />
                   </div>
-                </div>
+
+                  {/* Shopping Preferences */}
+                  <div>
+                    <label className="block font-mono mb-2">Shopping Preferences:</label>
+                    <div className="flex gap-6">
+                      {['Women', 'Men', 'Kids', 'Beauty'].map((pref) => (
+                        <label key={pref} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            className="w-4 h-4 border-2 border-gray-300"
+                          />
+                          <span className="ml-2 font-mono">{pref}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Save Button */}
+                  <button
+                    type="submit"
+                    className="w-full bg-black text-white py-3 font-mono"
+                  >
+                    Save Changes
+                  </button>
+                </form>
               </div>
             </div>
           </main>
