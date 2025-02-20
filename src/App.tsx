@@ -853,7 +853,7 @@ function App() {
 
               {/* Message */}
               <p className="text-xl text-center">
-                Use your Apple Account to sign in to Floward.
+                Use your Apple Account to sign in to Luxury Fashion.
               </p>
 
               {/* Email Input */}
