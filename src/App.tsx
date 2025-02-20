@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Apple, CheckCircle2 } from 'lucide-react';
 
 // Simplified screen types
-type Screen = 'landing' | 'registration_form' | 'verify' | 'success';
+type Screen = 'landing' | 'registration_form' | 'verify' | 'success' | 'apple_signin';
 
 const LUXURY_BRANDS = [
   'Louis Vuitton',
@@ -191,19 +191,37 @@ function App() {
   // Modify social auth handler to set email as verified
   const handleSocialAuth = async (provider: 'apple' | 'google') => {
     try {
-      // Simulate social auth logic
-      // In a real app, this would come from the OAuth provider
+      // Simulate social auth data
+      // In real app, this would come from the OAuth provider
+      const mockSocialAuthData = {
+        email: 'user@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+      };
+
+      // Update profile with social auth data
       setProfile(prev => ({
         ...prev,
-        email: 'johndoe@icloud.com',
-        firstName: 'John',
-        surname: 'Doe'
+        email: mockSocialAuthData.email,
+        firstName: mockSocialAuthData.firstName,
+        surname: mockSocialAuthData.lastName,
+        // Reset other fields to empty
+        salutation: '',
+        phone: '',
+        birthday: '',
+        favoriteDesigners: ''
       }));
+
+      // Set email as verified since it's verified by the social provider
       setIsEmailVerified(true);
+      
+      // Mark this as social auth flow
       setIsViaSocialAuth(true);
-      setCurrentScreen('registration_form');
+
+      // Skip directly to success/profile page
+      setCurrentScreen('success');
     } catch (error) {
-      console.error('Auth failed:', error);
+      console.error('Social auth failed:', error);
     }
   };
 
@@ -257,7 +275,7 @@ function App() {
             {/* Social Auth Buttons */}
             <div className="space-y-4 mb-8">
               <button 
-                onClick={() => handleSocialAuth('apple')} 
+                onClick={() => setCurrentScreen('apple_signin')}
                 className="w-full flex items-center justify-center gap-2 bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition-colors"
               >
                 <Apple size={20} />
@@ -335,30 +353,21 @@ function App() {
             {/* Combined Profile Form */}
             <div className="space-y-6">
               <div className="space-y-4">
+                {/* Email Section */}
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="block font-mono">Email:</label>
-                    {isEmailVerified && (
-                      <span className="text-sm flex items-center gap-1">
-                        Verified ✓
-                      </span>
-                    )}
-                  </div>
-                  <div className="relative">
-                    <input
-                      id="email"
-                      type="email"
-                      name="email"
-                      autoComplete="email"
-                      value={profile.email}
-                      onChange={(e) => handleProfileChange('email', e.target.value)}
-                      className="block w-full px-4 py-3 border rounded-lg bg-gray-100"
-                      placeholder="Email address"
-                      required
-                      disabled
-                    />
-                  </div>
+                  <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    value={profile.email}
+                    onChange={(e) => handleProfileChange('email', e.target.value)}
+                    className="block w-full px-4 py-3 border rounded-lg bg-gray-100"
+                    placeholder="Email address"
+                    required
+                    disabled
+                  />
                   {!isEmailVerified && !isViaSocialAuth && (
                     <p className="text-sm text-gray-600 mt-1">
                       We sent a verification link to your email. Click on it to verify your email, or{' '}
@@ -373,46 +382,28 @@ function App() {
                   )}
                 </div>
 
+                {/* Salutation Section */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">Salutation *</label>
                   <div className="flex gap-6">
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="salutation"
-                        value="Mr"
-                        checked={profile.salutation === 'Mr'}
-                        onChange={(e) => handleProfileChange('salutation', e.target.value)}
-                        className="w-4 h-4 text-black border-gray-300 focus:ring-black"
-                        required
-                      />
-                      <span className="ml-2">Mr</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="salutation"
-                        value="Mrs"
-                        checked={profile.salutation === 'Mrs'}
-                        onChange={(e) => handleProfileChange('salutation', e.target.value)}
-                        className="w-4 h-4 text-black border-gray-300 focus:ring-black"
-                      />
-                      <span className="ml-2">Mrs</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="salutation"
-                        value="Miss"
-                        checked={profile.salutation === 'Miss'}
-                        onChange={(e) => handleProfileChange('salutation', e.target.value)}
-                        className="w-4 h-4 text-black border-gray-300 focus:ring-black"
-                      />
-                      <span className="ml-2">Miss</span>
-                    </label>
+                    {['Mr', 'Mrs', 'Miss'].map((option) => (
+                      <label key={option} className="flex items-center">
+                        <input
+                          type="radio"
+                          name="salutation"
+                          value={option}
+                          checked={profile.salutation === option}
+                          onChange={(e) => handleProfileChange('salutation', e.target.value)}
+                          className="w-4 h-4 text-black border-gray-300 focus:ring-black"
+                          required
+                        />
+                        <span className="ml-2">{option}</span>
+                      </label>
+                    ))}
                   </div>
                 </div>
 
+                {/* Name Fields */}
                 <div className="flex gap-4">
                   <div className="w-full">
                     <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
@@ -446,14 +437,9 @@ function App() {
                   </div>
                 </div>
 
+                {/* Phone Number */}
                 <div className="space-y-2">
                   <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Mobile Number *</label>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="block font-mono">Phone Number:</label>
-                    <span className="text-sm flex items-center gap-1">
-                      Verified ✓
-                    </span>
-                  </div>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                       <span className="text-gray-500 text-sm">🇦🇪 +971</span>
@@ -476,91 +462,34 @@ function App() {
                   </p>
                 </div>
 
-                <div>
-                  <label htmlFor="birthday" className="block text-sm font-medium text-gray-700 mb-1">Date of Birth (Optional)</label>
-                  <input
-                    id="birthday"
-                    type="date"
-                    value={profile.birthday}
-                    onChange={(e) => handleProfileChange('birthday', e.target.value)}
-                    className="block w-full px-4 py-3 border rounded-lg"
-                  />
-                </div>
+                {/* Continue Button */}
+                <button
+                  onClick={handleVerification}
+                  className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-900 transition-colors"
+                >
+                  Continue
+                </button>
 
-                <div className="relative space-y-2" ref={designerInputRef}>
-                  <label htmlFor="designers" className="block text-sm font-medium text-gray-700 mb-1">Favorite Luxury Brands (Optional)</label>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {getSelectedBrands().map(brand => (
-                      <span
-                        key={brand}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800"
-                      >
-                        {brand}
-                        <button
-                          onClick={() => removeBrand(brand)}
-                          className="ml-2 text-gray-500 hover:text-gray-700"
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                  <input
-                    id="designers"
-                    type="text"
-                    onChange={handleDesignerInput}
-                    onFocus={() => {
-                      const suggestions = LUXURY_BRANDS.filter(
-                        brand => !getSelectedBrands().includes(brand)
-                      );
-                      setBrandSuggestions(suggestions);
-                      setShowBrandSuggestions(suggestions.length > 0);
-                    }}
-                    className="block w-full px-4 py-3 border rounded-lg focus:ring-1 focus:ring-black focus:border-black"
-                    placeholder="Favorite Designers (Optional)"
-                  />
-                  {showBrandSuggestions && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-auto">
-                      {brandSuggestions.map((brand, index) => (
-                        <button
-                          key={brand}
-                          onClick={() => selectBrand(brand)}
-                          className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${
-                            index !== brandSuggestions.length - 1 ? 'border-b border-gray-100' : ''
-                          }`}
-                        >
-                          {brand}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                {/* Back Button */}
+                <button
+                  onClick={() => {
+                    setProfile({
+                      email: '',
+                      salutation: '',
+                      firstName: '',
+                      surname: '',
+                      phone: '',
+                      birthday: '',
+                      favoriteDesigners: ''
+                    });
+                    setIsViaSocialAuth(false);
+                    setCurrentScreen('landing');
+                  }}
+                  className="w-full text-gray-500 py-2 text-sm hover:text-gray-700"
+                >
+                  Use a different registration method
+                </button>
               </div>
-
-              <button
-                onClick={handleVerification}
-                className="w-full bg-black text-white py-3 rounded-lg"
-              >
-                Continue
-              </button>
-              <button
-                onClick={() => {
-                  setProfile({
-                    email: '',
-                    salutation: '',
-                    firstName: '',
-                    surname: '',
-                    phone: '',
-                    birthday: '',
-                    favoriteDesigners: ''
-                  });
-                  setIsViaSocialAuth(false);
-                  setCurrentScreen('landing');
-                }}
-                className="w-full text-gray-500 py-2 text-sm hover:text-gray-700"
-              >
-                Use a different registration method
-              </button>
             </div>
           </div>
         </div>
@@ -770,7 +699,6 @@ function App() {
                         value={profile.firstName}
                         onChange={(e) => handleProfileChange('firstName', e.target.value)}
                         className="w-full p-2 border-2 font-mono"
-                        disabled={isViaSocialAuth}
                       />
                     </div>
                     <div>
@@ -780,7 +708,6 @@ function App() {
                         value={profile.surname}
                         onChange={(e) => handleProfileChange('surname', e.target.value)}
                         className="w-full p-2 border-2 font-mono"
-                        disabled={isViaSocialAuth}
                       />
                     </div>
                   </div>
@@ -824,9 +751,11 @@ function App() {
                     <div>
                       <div className="flex justify-between items-center mb-2">
                         <label className="block font-mono">Phone Number:</label>
-                        <span className="text-sm flex items-center gap-1">
-                          Verified ✓
-                        </span>
+                        {!isViaSocialAuth && (
+                          <span className="text-sm flex items-center gap-1">
+                            Verified ✓
+                          </span>
+                        )}
                       </div>
                       <div className="flex gap-2">
                         <div className="w-24">
@@ -893,6 +822,95 @@ function App() {
               </div>
             </div>
           </main>
+        </div>
+      );
+
+    case 'apple_signin':
+      return (
+        // Semi-transparent overlay
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white w-full max-w-lg rounded-lg shadow-xl">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b">
+              <img src="/apple-logo.svg" alt="Apple" className="w-5 h-5" />
+              <h1 className="text-xl font-medium">Sign in to Apple Account</h1>
+              <button 
+                onClick={() => setCurrentScreen('landing')}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-8 space-y-8">
+              {/* App Icon */}
+              <div className="flex justify-center">
+                <div className="w-24 h-24 bg-teal-900 rounded-xl flex items-center justify-center">
+                  <span className="text-4xl text-white">F</span>
+                </div>
+              </div>
+
+              {/* Message */}
+              <p className="text-xl text-center">
+                Use your Apple Account to sign in to Floward.
+              </p>
+
+              {/* Email Input */}
+              <div className="space-y-2">
+                <label className="text-sm text-gray-600">Email or Phone Number</label>
+                <input
+                  type="text"
+                  value="user@example.com"
+                  className="w-full p-3 border rounded-lg bg-gray-50"
+                  disabled
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="space-y-4">
+                <button
+                  onClick={() => {
+                    handleSocialAuth('apple');
+                  }}
+                  className="w-full py-3 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Continue with Password
+                </button>
+                <button className="w-full py-3 border rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                  <span className="text-lg">👤</span> Sign in with Passkey
+                </button>
+                <p className="text-xs text-center text-gray-500">
+                  Requires a device with iOS 17.
+                </p>
+              </div>
+
+              {/* Forgot Password Link */}
+              <div className="text-center">
+                <a href="#" className="text-blue-600 hover:underline">
+                  Forgot password?
+                </a>
+              </div>
+
+              {/* Privacy Notice */}
+              <div className="text-center text-sm text-gray-600">
+                <p>
+                  In setting up Sign in with Apple, information about your
+                  interactions with Apple and this device may be used by
+                  Apple to help prevent fraud.{' '}
+                  <a href="#" className="text-blue-600 hover:underline">
+                    See how your data is managed...
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="border-t p-4 text-center text-sm text-gray-600">
+              <p>Copyright © 2025 Apple Inc. All rights reserved.</p>
+              <a href="#" className="hover:underline">Privacy Policy</a>
+            </div>
+          </div>
         </div>
       );
   }
